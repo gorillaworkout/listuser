@@ -8,15 +8,15 @@ import reportWebVitals from "./reportWebVitals";
 import {BrowserRouter} from 'react-router-dom'
 import Thunk from 'redux-thunk'
 import "bootstrap/dist/css/bootstrap.min.css";
-// import Reducers from './redux/Reducers'
+import Reducers from './Redux/Reducers'
 
 ReactDOM.render(
     <React.StrictMode>
-        {/* <Provider store = {createStore(Reducers, {}, applyMiddleware(Thunk))}> */}
+        <Provider store = {createStore(Reducers, {}, applyMiddleware(Thunk))}>
             <BrowserRouter>
                 <App />
             </BrowserRouter>
-        {/* </Provider> */}
+        </Provider>
     </React.StrictMode>,
     document.getElementById("root"),
 );

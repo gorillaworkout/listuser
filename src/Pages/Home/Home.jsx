@@ -1,71 +1,37 @@
-import React, { Component,useState,useEffect } from 'react';
+import React, {useState } from 'react';
 import './Home.css'
 import './../css/global.css'
-import Logo from './../../Assets/gadjian.png'
-import user from './../../Assets/2.jpg'
 import {AiFillHome,AiOutlinePlus,AiOutlineLeft,AiOutlineRight} from 'react-icons/ai'
 import {HiUserGroup} from 'react-icons/hi'
 import {BiCalendar} from 'react-icons/bi'
 import {FaSearch} from 'react-icons/fa'
 import {BsThreeDots} from 'react-icons/bs'
-import {GrPrevious,GrNext} from 'react-icons/gr'
-import axios from 'axios'
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import moment from 'moment'
-import {FaBars} from 'react-icons/fa'
+import LazyLoad from 'react-lazyload';
+import Header from './../../Components/Header'
+import {connect} from 'react-redux';
+import {FetchFunc} from './../../Redux/Actions'
+function Home(props){
 
-export default function Home(){
-
-    const [dataRender,setDataRender]=useState([])
+    const [dataRender,setDataRender]=useState(props.dataUsers)
     const [stateRender,setStateRender]=useState(1)
-
     const [isBack,setIsBack]=useState(true)
     const [isNext,setIsNext]=useState(false)
-
-    const [dataRender2,setDataRender2]=useState([])
     const [angkaAwal,setAngkaAwal]=useState(0)
     const [angkaMaks,setAngkaMaks]=useState(4)
-
-    const [maxPage,setMaxPage]=useState()
-
-    const [idPersonnel,setIdPersonnel] = useState([])
-
     const [isHover,setIsHover]=useState(false)
-    const [searchKosong,setSearchKosong]=useState(false)
     
-    const fetchData=()=>{
-        axios.get(`https://randomuser.me/api/?results=28`)
-        .then((res)=>{
-            // console.log(res.data)
-            setDataRender(res.data.results)
-            localStorage.setItem('listData',JSON.stringify(res.data.results))
-        }).catch((err)=>{
-            console.log(err)
-        })
-    }
-
-    
-    useEffect(()=>{
-        
-        let dataLocalStorage = JSON.parse(localStorage.getItem('listData'))
-        
-        if(localStorage.length === 0){
-            // alert('masuk ke if ls')
-            fetchData()
-        }else {
-            // alert('masuk ke else ls')
-            setDataRender(dataLocalStorage)
-        }
-        
-        
-       
-
-    },[])
-
-
-
    
+
+
+    
+    // useEffect(()=>{
+    //     setDataRender(props.dataUsers)
+    // },[])
+
+
     const renderData3=()=>{
         // angka awal untuk nentuin mau ngedapetin berapa data, karna mau 4. jd start dr 0
         // angka maks untuk nentuin maksimal data buat di loop. jd 4, untuk nextnya karna mau 4 jadi setiap next button + 4
@@ -75,10 +41,7 @@ export default function Home(){
         for(var i=angkaAwal; i<dataRender.length; i++){
             if(i<angkaMaks){
                 simpan.push(dataRender[i])
-                id.push(i+1)
-                
-                
-                
+                id.push(i+1)        
             }
             // console.log(simpan)
         }
@@ -87,27 +50,29 @@ export default function Home(){
             return (
                 <>
                     <div className="personnel" key={index}>
+                        <LazyLoad >
                         <div className="index-personnel">
                             <p>Personnel ID : {id[index]}</p>
                             <BsThreeDots className="icon-option" style={{color:'#797979'}}/>
                         </div>
                         <div className="box-for-personnel">
                             <div className="personnel-img">
-                                <img src={val.picture.thumbnail} id="logo-personnel"></img>
+                                <img src={val.picture.thumbnail} alt="error" id="logo-personnel"></img>
                             </div>
                             <div className="personnel-data">
-                                <p style={{fontWeight:800}}>Nama</p>
+                                <p style={{fontWeight:800}} >Nama</p>
                                 <p>{val.name.first} {val.name.last}</p>
                                 <p style={{fontWeight:800}}>Telephone</p>
                                 <p>{val.phone}</p>
-                                <p style={{fontWeight:800}}>Birthday</p>
-                                <p>{moment(val.dob.date).format('DD-MM')}</p>
-                                <p style={{fontWeight:800}}>Email</p>
-                                <p>{val.email}</p>
+                                <p style={{fontWeight:800}} id="del">Birthday</p>
+                                <p id="del">{moment(val.dob.date).format('DD-MM')}</p>
+                                <p style={{fontWeight:800}} id="del">Email</p>
+                                <p id="del">{val.email}</p>
                             </div>
                         </div>
-
+                        </LazyLoad>
                     </div>
+
                 </>
             )
             
@@ -122,7 +87,7 @@ export default function Home(){
         console.log(dataRender.length)
         setStateRender((stateRender+1))
         console.log('state render jadi ' , stateRender,'sekarang jadi', stateRender+1)
-        if(stateRender==7){
+        if(stateRender ===7){
             // alert('masuk ke if next page')
             setStateRender(7)
             setIsNext(true)
@@ -143,7 +108,7 @@ export default function Home(){
     const previousPage=()=>{
         setStateRender((stateRender-1))
         console.log('state render jadi ' , stateRender, 'sekarang jadi', stateRender-1)   
-        if(stateRender<1 || stateRender == 1){
+        if(stateRender<1 || stateRender === 1){
             // alert('masuk ke if previous page')
             setStateRender(1)
             setIsBack(true)
@@ -158,24 +123,16 @@ export default function Home(){
         }
         console.log(stateRender,'184 - state render')
     }
-    
-    
-    console.log(isBack)
 
-    console.log(dataRender)
-
-    // const onChange=(word)=>{
-    //     console.log(word)
-    // }
     const onChange=debounce(function(name){
         if(name){
             console.log(name)
             filterSearch(name)
-            setSearchKosong(false)
-        }else if(name == ''){
+            
+        }else if(name === ''){
             let dataLocalStorage = JSON.parse(localStorage.getItem('listData'))
             setDataRender(dataLocalStorage)
-            setSearchKosong(false)
+            
         }
     },1000)
 
@@ -185,41 +142,23 @@ export default function Home(){
             return val.name.first.toLowerCase().includes(input.toLowerCase())
         })
 
-        if(filterdata.length == 0 ){
-            setSearchKosong(true)
+        if(filterdata.length === 0 ){
+            console.log('data kosong')
         }
         console.log(filterdata)
         // setListData(filterdata)
         setDataRender(filterdata)
     }
 
-    const onMenu=()=>{
-        console.log('menu jalan')
-    }
-
+  
+    
     return (
         
         <>
 
-       
+        
             <div className="box-home">
-                <div className="box-header">
-                    <img src={Logo} id="logo-gadjian"></img>
-                    <div className="box-username">
-                        <p>Hallo, <span>Gadjian User</span> </p>
-                    </div>
-                </div>
-                <header id="header-respo">
-                    <div>
-                        <FaBars className="icon-header2" onClick={onMenu}/>
-                        <Link to="/" style={{textDecoration:'none'}}>
-                            <img src={Logo} id="logo-gadjian"></img>
-                        </Link>
-                    </div>
-                    <img src={user} id="logo-user"></img>
-                   
-                </header>
-
+               <Header/>
                 <div className="box-content">
                     <div className="content-left">
                         <div className="box-option">
@@ -319,3 +258,11 @@ export default function Home(){
         </>
     )
 }
+
+const Mapstatetoprops=({Auth})=>{
+    return {
+        ...Auth
+    }
+}
+
+export default connect(Mapstatetoprops,{FetchFunc})(Home);
