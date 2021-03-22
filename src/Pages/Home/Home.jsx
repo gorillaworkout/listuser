@@ -1,5 +1,6 @@
 import React, { Component,useState,useEffect } from 'react';
 import './Home.css'
+import './../css/global.css'
 import Logo from './../../Assets/gadjian.png'
 import user from './../../Assets/2.jpg'
 import {AiFillHome,AiOutlinePlus,AiOutlineLeft,AiOutlineRight} from 'react-icons/ai'
@@ -12,6 +13,8 @@ import axios from 'axios'
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import moment from 'moment'
+import {FaBars} from 'react-icons/fa'
+
 export default function Home(){
 
     const [dataRender,setDataRender]=useState([])
@@ -88,19 +91,22 @@ export default function Home(){
                             <p>Personnel ID : {id[index]}</p>
                             <BsThreeDots className="icon-option" style={{color:'#797979'}}/>
                         </div>
-                        <div className="personnel-img">
-                            <img src={val.picture.thumbnail} id="logo-personnel"></img>
+                        <div className="box-for-personnel">
+                            <div className="personnel-img">
+                                <img src={val.picture.thumbnail} id="logo-personnel"></img>
+                            </div>
+                            <div className="personnel-data">
+                                <p style={{fontWeight:800}}>Nama</p>
+                                <p>{val.name.first} {val.name.last}</p>
+                                <p style={{fontWeight:800}}>Telephone</p>
+                                <p>{val.phone}</p>
+                                <p style={{fontWeight:800}}>Birthday</p>
+                                <p>{moment(val.dob.date).format('DD-MM')}</p>
+                                <p style={{fontWeight:800}}>Email</p>
+                                <p>{val.email}</p>
+                            </div>
                         </div>
-                        <div className="personnel-data">
-                            <p style={{fontWeight:800}}>Nama</p>
-                            <p>{val.name.first} {val.name.last}</p>
-                            <p style={{fontWeight:800}}>Telephone</p>
-                            <p>{val.phone}</p>
-                            <p style={{fontWeight:800}}>Birthday</p>
-                            <p>{moment(val.dob.date).format('DD-MM')}</p>
-                            <p style={{fontWeight:800}}>Email</p>
-                            <p>{val.email}</p>
-                        </div>
+
                     </div>
                 </>
             )
@@ -187,7 +193,9 @@ export default function Home(){
         setDataRender(filterdata)
     }
 
-
+    const onMenu=()=>{
+        console.log('menu jalan')
+    }
 
     return (
         
@@ -199,9 +207,18 @@ export default function Home(){
                     <img src={Logo} id="logo-gadjian"></img>
                     <div className="box-username">
                         <p>Hallo, <span>Gadjian User</span> </p>
-                        <img src={user} id="logo-user"></img>
                     </div>
                 </div>
+                <header id="header-respo">
+                    <div>
+                        <FaBars className="icon-header2" onClick={onMenu}/>
+                        <Link to="/" style={{textDecoration:'none'}}>
+                            <img src={Logo} id="logo-gadjian"></img>
+                        </Link>
+                    </div>
+                    <img src={user} id="logo-user"></img>
+                   
+                </header>
 
                 <div className="box-content">
                     <div className="content-left">
@@ -297,6 +314,8 @@ export default function Home(){
                 </div>
 
             </div>
+
+            
         </>
     )
 }
