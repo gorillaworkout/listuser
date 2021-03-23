@@ -26,7 +26,7 @@ export default function Header(){
                             <img src={Logo}  alt="err" id="logo-gadjian"></img>
                         </Link>
                     </div>
-                    <img src={user} alt="err" id="logo-user"></img>
+                    <img src={user} alt="error" id="logo-user"></img>
                 
                 </header>
                     
