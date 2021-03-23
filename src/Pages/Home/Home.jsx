@@ -131,9 +131,11 @@ function Home(props){
         var simpan =[]
         var id = []
         // var page = []
-        
-        for(var i=angkaAwal; i<dataRender.length; i++){
-            if(i<angkaMaks){
+        // let dataLocalStorage = JSON.parse(localStorage.getItem('listData'))
+        let newAngkaAwal = JSON.parse(localStorage.getItem('angkaAwal'))
+        let newAngkaMaks = JSON.parse(localStorage.getItem('angkaMaks'))
+        for(var i=newAngkaAwal; i<dataRender.length; i++){
+            if(i<newAngkaMaks){
                 simpan.push(dataRender[i])
                 id.push(i+1)   
             }
